@@ -1,0 +1,2 @@
+# eazychat
+An openAI chatbot

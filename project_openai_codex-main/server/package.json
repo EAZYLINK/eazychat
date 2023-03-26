@@ -15,9 +15,9 @@
   "main": "server.js",
   "author": "",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
     "nodemon": "^2.0.21",
     "openai": "^3.2.1"
-  }
+  },
+  "description": ""
 }

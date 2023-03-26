@@ -110,7 +110,7 @@ const handleSubmit = async () => {
     // messageDiv.innerHTML = "..."
     loader(messageDiv)
 
-    const response = await fetch('http://localhost:5000/', {
+    const response = await fetch('http://localhost:5000/' || "https://eazychat-nt30.onrender.com/", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

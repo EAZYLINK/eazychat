@@ -9,19 +9,13 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const openai = new OpenAIApi(configuration);
-var corsOptions = {
-  origin: ['http://127.0.0.1:5173/', "https://eazychatai.netlify.app/"],
-  optionsSuccessStatus: 200 // For legacy browser support
-}
 const app = express()
-app.use(cors(corsOptions))
+app.use(cors())
 app.use(express.json())
 
 app.get('/', async (req, res) => {
   res.status(200).send({
     message: 'Hello from CodeX!',
-    API_KEY:process.env.OPENAI_API_KEY
   })
 })
 

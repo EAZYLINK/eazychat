@@ -5,31 +5,19 @@ const form = document.querySelector('form')
 const chatContainer = document.querySelector('#chat_container')
 const input = document.querySelector("#input")
 const field = document.querySelector('#textarea')
+const submitBtn = document.querySelector('#submit')
+const voice = document.querySelector('#voice')
+const icon = document.querySelector('.speaker')
 
 function speaker(Data){
-    let speakData = new SpeechSynthesisUtterance(((Data.replace('\\n', '')).replace('bot', '')).replace(':', ''));
+    let speakData = new SpeechSynthesisUtterance(Data);
     console.log(speakData)
     speakData.voice = speechSynthesis.getVoices()[0];
     speakData.rate = 1;
     speechSynthesis.speak(speakData)
 }
 
-function inputVoices(){
-    var recognition = new webkitSpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.start();
-    recognition.onresult = function(event) {
-    var transcript = event.results[0][0].transcript;
-    field.textContent = transcript
-    }
-    recognition.addEventListener('audioend', async()=>{
-        if (field.textContent !== ''){
-            await handleSubmit()
-            field.textContent = ''
-        }
-       
-    })
-}
+
 
 let loadInterval
 
@@ -66,7 +54,6 @@ function generateUniqueId() {
     const timestamp = Date.now();
     const randomNumber = Math.random();
     const hexadecimalString = randomNumber.toString(16);
-
     return `id-${timestamp}-${hexadecimalString}`;
 }
 
@@ -125,9 +112,8 @@ const handleSubmit = async () => {
 
     if (response.ok && response.length !=0) {
         const data = await response.json();
-        speaker(JSON.stringify(data))
         const parsedData = data.bot.trim() // trims any trailing spaces/'\n' 
-
+        speaker(parsedData)
         typeText(messageDiv, parsedData)
     } else {
         const err = await response.text()
@@ -136,9 +122,45 @@ const handleSubmit = async () => {
         alert(err)
     }
 }
+
+
+function inputVoices(){
+    var recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.start();
+    recognition.onresult = function(event) {
+    var transcript = event.results[0][0].transcript;
+    field.textContent = transcript
+    }
+    recognition.addEventListener('audioend', async()=>{
+        if (field.textContent !== ''){
+            await handleSubmit()
+            field.textContent = ''
+        }
+       
+    })
+}
+
+voice.addEventListener('click', function handleSpeaker(){
+    if(speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+        icon.src = 'assets/cancel_speaker.png'
+   
+    } 
+    else {
+        icon.src = 'assets/speaker-50.png'
+    }
+})
+
 input.addEventListener('click', inputVoices)
-field.addEventListener('onkeyup', handleSubmit)
-form.addEventListener('submit', handleSubmit)
+field.addEventListener('keypress', function (event){
+    if(event.key == 'enter'){
+        event.preventDefault()
+        handleSubmit
+    }
+})
+submitBtn.addEventListener('click', handleSubmit)
+form.addEventListener('audioend', handleSubmit)
 form.addEventListener('keyup', (e) => {
     if (e.keyCode === 13) {
         handleSubmit(e)

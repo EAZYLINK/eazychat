@@ -1,5 +1,7 @@
 import bot from './assets/bot.svg'
 import user from './assets/user.svg'
+import speaker_url from './assets/speaker-50.png'
+import speakercsl_url from './assets/cancel_speaker.png'
 
 const form = document.querySelector('form')
 const chatContainer = document.querySelector('#chat_container')
@@ -8,7 +10,6 @@ const field = document.querySelector('#textarea')
 const submitBtn = document.querySelector('#submit')
 const voice = document.querySelector('#voice')
 const icon = document.querySelector('.speaker')
-
 function speaker(Data){
     let speakData = new SpeechSynthesisUtterance(Data);
     console.log(speakData)
@@ -128,28 +129,26 @@ function inputVoices(){
     var recognition = new webkitSpeechRecognition();
     recognition.lang = 'en-US';
     recognition.start();
-    recognition.onresult = function(event) {
+    recognition.onresult = async function(event) {
     var transcript = event.results[0][0].transcript;
     field.textContent = transcript
+    if (field.textContent !== ''){
+        await handleSubmit()
+        field.textContent = ''
     }
-    recognition.addEventListener('audioend', async()=>{
-        if (field.textContent !== ''){
-            await handleSubmit()
-            field.textContent = ''
-        }
-       
-    })
+    }
 }
 
-voice.addEventListener('click', function handleSpeaker(){
-    if(speechSynthesis.speaking) {
-        speechSynthesis.cancel();
-        icon.src = 'assets/cancel_speaker.png'
-   
-    } 
-    else {
-        icon.src = 'assets/speaker-50.png'
+voice.addEventListener('click', function (){
+    if(icon.getAttribute('src') === speaker_url) {
+        icon.setAttribute('src', speakercsl_url)
+        speechSynthesis.pause(); 
+    } else
+    {
+        icon.setAttribute('src', speaker_url)
+        speechSynthesis.resume();
     }
+    console.log(icon.getAttribute('src') === speaker_url)
 })
 
 input.addEventListener('click', inputVoices)

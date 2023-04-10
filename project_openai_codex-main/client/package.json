@@ -10,5 +10,9 @@
   },
   "devDependencies": {
     "vite": "^4.2.0"
+  },
+  "dependencies": {
+    "path": "^0.12.7",
+    "process": "^0.11.10"
   }
 }
